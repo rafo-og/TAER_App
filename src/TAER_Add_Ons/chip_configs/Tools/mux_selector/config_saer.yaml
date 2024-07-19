@@ -1,0 +1,119 @@
+TOOL:
+  chip_name: "chip_saer"
+  mux_signals:
+    REG_10:
+      label: "cfg_test_ib"
+      caption:  "Current bus"
+      values: [
+        [ 0, Unconnected           ],
+        [ 1, Pull-up current       ],
+        [ 2, Pull-up boost current ],
+        [ 3, Pull-down current     ],
+        [ 4, Vrst current          ],
+        [ 5, Quenching current     ],
+        [ 6, Reference current     ],
+        [ 7, Bandgap current       ]
+      ]
+    REG_11:
+      label: "cfg_test_vb33_mux"
+      caption: "3.3 V voltage bus"
+      values: [
+        [ 0, Bandgap bias      ],
+        [ 1, Bandgap output    ],
+        [ 2, CS resistor       ],
+        [ 3, Quenching bias    ]
+      ]
+    REG_12:
+      label: "cfg_test_vb12_mux"
+      caption: "1.2 V voltage bus"
+      values: [
+        [ 0, Pull-up bias    ],
+        [ 1, Pull-up delay   ],
+        [ 2, Pull-down bias  ],
+        [ 3, Vrst pixel      ]
+      ]
+    REG_16:
+      label: "cfg_dig_test_0"
+      caption: "Digital test signals"
+      values: &DIG_MUX [
+        # Value   Signal
+        [  0,     array_spike       ],
+        [  1,     array_out_quench  ],
+        [  2,     array_Q<0>        ],
+        [  3,     array_Q<1>        ],
+        [  4,     array_Q<2>        ],
+        [  5,     array_Q<3>        ],
+        [  6,     array_Q<4>        ],
+        [  7,     array_Q<5>        ],
+        [  8,     array_Q<6>        ],
+        [  9,     array_Q<7>        ],
+        [ 10,     array_S<0>        ],
+        [ 11,     array_S<1>        ],
+        [ 12,     array_S<2>        ],
+        [ 13,     array_S<3>        ],
+        [ 14,     array_req_row     ],
+        [ 15,     array_ack_row     ],
+        [ 16,     array_req_col     ],
+        [ 17,     array_rst_row     ],
+        [ 18,     array_rst_col     ],
+        [ 19,     array_rst_pix     ], #?
+        [ 20,     single_spike      ],
+        [ 21,     single_out_quench ],
+        [ 22,     single_Q<0>       ],
+        [ 23,     single_Q<1>       ],
+        [ 24,     single_Q<2>       ],
+        [ 25,     single_Q<3>       ],
+        [ 26,     single_Q<4>       ],
+        [ 27,     single_Q<5>       ],
+        [ 28,     single_Q<6>       ],
+        [ 29,     single_Q<7>       ],
+        [ 30,     single_S<0>       ],
+        [ 31,     single_S<1>       ],
+        [ 32,     single_S<2>       ],
+        [ 33,     single_S<3>       ],
+        [ 34,     single_rst_pix    ],
+        [ 35,     empty_spike       ],
+        [ 36,     empty_out_quench  ],
+        [ 37,     empty_Q<0>        ],
+        [ 38,     empty_Q<1>        ],
+        [ 39,     empty_Q<2>        ],
+        [ 40,     empty_Q<3>        ],
+        [ 41,     empty_Q<4>        ],
+        [ 42,     empty_Q<5>        ],
+        [ 43,     empty_Q<6>        ],
+        [ 44,     empty_Q<7>        ],
+        [ 45,     empty_S<0>        ],
+        [ 46,     empty_S<1>        ],
+        [ 47,     empty_S<2>        ],
+        [ 48,     empty_S<3>        ],
+        [ 49,     empty_rst_pix     ],
+        [ 50,     periph_rst_delay  ],
+        [ 51,     periph_req_x_pull ],
+        [ 52,     periph_req_x_nand ],
+        [ 53,     periph_olatch_x   ],
+        [ 54,     periph_req_y_pull ],
+        [ 55,     periph_req_y_nand ],
+        [ 56,     periph_olatch_y   ],
+        [ 57,     delay_out         ],
+        [ 58,     in_spad_2         ]
+      ]
+    REG_17:
+      label: "cfg_dig_test_1"
+      caption: "Digital test signals"
+      values: *DIG_MUX
+    REG_18:
+      label: "cfg_dig_test_2"
+      caption: "Digital test signals"
+      values: *DIG_MUX
+    REG_19:
+      label: "cfg_dig_test_3"
+      caption: "Digital test signals"
+      values: *DIG_MUX
+    REG_20:
+      label: "cfg_dig_test_4"
+      caption: "Digital test signals"
+      values: *DIG_MUX
+    REG_21:
+      label: "cfg_dig_test_5"
+      caption: "Digital test signals"
+      values: *DIG_MUX

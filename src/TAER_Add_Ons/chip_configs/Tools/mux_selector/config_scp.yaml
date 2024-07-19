@@ -1,0 +1,80 @@
+TOOL:
+  chip_name: "chip_scp"
+  mux_signals:
+    SIGNAL_0:
+      caption: "Sensor mode"
+      label: "o_cfg_sensor_mode"
+      values: [
+        [ 0, Edge detector           ],
+        [ 1, Time to first spike     ]
+      ]
+    SIGNAL_1:
+      caption: "DAC mux output"
+      label: "o_wreg_dac_test_en<4:0>"
+      values: [
+        [ 0,  None                 ],
+        [ 1,  Pixel Comparator     ],
+        [ 2,  Pull-up row          ],
+        [ 4,  Pull-up column       ],
+        [ 8,  Pull-down            ],
+        [ 16, Test delay           ]
+      ]
+    SIGNAL_2:
+      caption: "DAC test PAD"
+      label: "o_wreg_dac_test_en<5>"
+      values: [
+        [ 0,  Disable         ],
+        [ 1,  Enable          ]
+      ]
+    SIGNAL_3:
+      caption: "Bias Comparator"
+      label: "o_wreg_dac_mux<0>"
+      values: &PAD_MUX_VALUES [
+        [ 0,  PAD                 ],
+        [ 1,  Internal DAC        ]
+      ]
+    SIGNAL_4:
+      caption: "Bias Pull-up row"
+      label: "o_wreg_dac_mux<1>"
+      values: *PAD_MUX_VALUES
+    SIGNAL_5:
+      caption: "Bias Pull-up column"
+      label: "o_wreg_dac_mux<2>"
+      values: *PAD_MUX_VALUES
+    SIGNAL_6:
+      caption: "Bias Pull-down"
+      label: "o_wreg_dac_mux<3>"
+      values: *PAD_MUX_VALUES
+    SIGNAL_7:
+      caption: "Bias Test delay"
+      label: "o_wreg_dac_mux<4>"
+      values: *PAD_MUX_VALUES
+    SIGNAL_8:
+      caption: "Bias Test buffer"
+      label: "o_wreg_dac_mux<5>"
+      values: *PAD_MUX_VALUES
+    SIGNAL_9:
+      caption: "Pixel threshold voltage"
+      label: "o_wreg_dac_mux<6>"
+      values: *PAD_MUX_VALUES
+    SIGNAL_10:
+      caption: "DAC voltage core selection"
+      label: "o_wreg_dac_vth<5>"
+      values: [
+        [ 0,  "Core 1 (Common centroid)"  ],
+        [ 1,  Core 2                    ]
+      ]
+    SIGNAL_11:
+      caption: "DAC buffer enable"
+      label: "o_wreg_dac_vth<6>"
+      values: [
+        [ 0,  Enabled  ],
+        [ 1,  Disabled ]
+      ]
+    SIGNAL_12:
+      caption: "DAC output connection"
+      label: "o_wreg_dac_vth<7>"
+      values: [
+        [ 0,  To sensor   ],
+        [ 1,  To test PAD ]
+      ]

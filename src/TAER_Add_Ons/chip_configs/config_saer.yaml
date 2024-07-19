@@ -1,0 +1,234 @@
+SENSOR:
+  resolution:
+    x: &SENSOR_X 64
+    y: &SENSOR_Y 64
+    chip_name: &CHIP_NAME "chip_saer"
+
+MODEL:
+  operation_timeout: 5
+  img:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+    # Should be R0, R90, R180, R270
+    rotate: "R180" # R270
+    # Could be None, MX or MY
+    flip: None #"MY"
+  chip_name: *CHIP_NAME
+  modes: &MODES [
+    # Label                 # Code
+    ["Free running",         "0x00"  ],
+    ["Time to First Spike",  "0x01"  ],
+    ["Quanta Imaging",       "0x02"  ],
+    ["Time of Flight",       "0x03"  ],
+    ["Raw data",             "0x04"  ],
+    # ["iToF",                 "0x05"  ],
+    ["pDVS",                 "0x06"  ],
+    ["QI RAW",               "0x07"  ]
+  ]
+  device_registers: &REGISTERS [
+    # Label                 Address Value
+    ["PIX_ON ON TIME",      "0x00", "0x00"],
+    ["PIX_ON PERIOD",       "0x01", "0x00"],
+    ["PIX_ON DELAY",        "0x02", "0x00"],
+    ["RST_PIX ON TIME",     "0x03", "0x00"],
+    ["RST_PERIPH ON TIME",  "0x04", "0x00"],
+    ["TFS CLK PERIOD",      "0x05", "0x00"],
+    ["N. of SAMPLES",       "0x06", "0x00"],
+    ["SRAM DIV DIN",        "0x07", "0x00"],
+    ["SPI_TX_BYTES",        "0x08", "0x00"],
+    ["QI ON  TIME",         "0x09", "0x00"],
+    ["QI OFF TIME",         "0x0A", "0x00"],
+    ["N. of PULSES (TEST)", "0x0B", "0x00"],
+    ["FREQ. DIV. (TEST)",   "0x0C", "0x00"],
+    ["LASER PULSE WIDTH",   "0x0D", "0x00"],
+    ["PDVS SAMPLES",        "0x0E", "0x00"],
+    ["PDVS NTH",            "0x0F", "0x00"],
+    ["CFG_LASER",           "0x10", "0x00"],
+    ["N_EVENTS",            "0x11", "0x00"]
+  ]
+  dacs: &DACS [
+    # Label              Address Channel  Value
+    ["periph_pu",        "0x01", "0x00", "0x00"],
+    ["pix_vrst",         "0x01", "0x01", "0x00"],
+    ["periph_pu_delay",  "0x01", "0x02", "0x00"],
+    ["periph_pd",        "0x01", "0x03", "0x00"],
+    ["pix_vbq",          "0x00", "0x00", "0x00"],
+    ["pix_spad_gate",    "0x00", "0x01", "0x00"]
+  ]
+  adcs: &ADCS [
+    # ID      Channel     offset   slope           Label
+    ["0x00",   "0x00",    "-0.129",    "0.0011",   "1.2 V Test voltage"  ], # 0.00093391
+    ["0x00",   "0x01",    "-0.129",    "0.0011",   "3.3 V Test voltage"  ],
+    ["0x00",   "0x02",    "0",    "1",            "Junction Temperature" ],
+    ["0x00",   "0x03",    "2E2",    "-6E-2",            "Test current"   ] #uA
+  ]
+  adc_tmeas: 0.2
+  chip_registers:
+    REG_0:
+      label: "REG PERIPH CFG"
+      address: "0x01"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["4",   "1",      breq_nand_en         ],
+        ["3",   "1",      latch_req_en         ],
+        ["2",   "1",      latch_rst_en         ],
+        ["1",   "1",      en_online_ram_data   ],
+        ["0",   "1",      pu_boost_en          ]
+      ]
+    REG_1:
+      label: "REG DELAY BIAS"
+      address: "0x02"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "10",      cfg_delay_bias     ]
+      ]
+    REG_2:
+      label: "REG DELAY CFG"
+      address: "0x03"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["3",   "1",      in_bypass    ],
+        ["2",   "1",      win_bypass   ],
+        ["1",   "1",      posfb_en     ],
+        ["0",   "1",      delay_en     ]
+      ]
+    REG_3:
+      label: "REG BIAS MUX (1: PAD. 0: Int.)"
+      address: "0x04"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "1",      vbias_periph_pu       ],
+        ["1",   "1",      vbias_periph_pu_delay ],
+        ["2",   "1",      vbias_periph_pd       ],
+        ["3",   "1",      vbias_pix_vrst        ],
+        ["4",   "1",      vbias_pix_vbq         ]
+      ]
+    REG_4:
+      label: "REG BIAS RES"
+      address: "0x05"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_ctrl_res ],
+        ["5",   "1",      ext_res_en   ]
+      ]
+    REG_5:
+      label: "REG BIAS VPD"
+      address: "0x06"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_vpd  ]
+      ]
+    REG_6:
+      label: "REG BIAS VPU"
+      address: "0x07"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_vpu  ]
+      ]
+    REG_7:
+      label: "REG BIAS VPU DELAY"
+      address: "0x08"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_vpu_delay  ]
+      ]
+    REG_8:
+      label: "REG BIAS VBQ"
+      address: "0x09"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_vbq  ]
+      ]
+    REG_9:
+      label: "REG BIAS VRST"
+      address: "0x0A"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["5",   "1",      cfg_bias_vrst_buff_en ],
+        ["0",   "5",      cfg_bias_vrst         ]
+      ]
+    REG_10:
+      label: "REG TEST IB"
+      address: "0x0B"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "3",      cfg_test_ib   ]
+      ]
+    REG_11:
+      label: "REG TEST VB33"
+      address: "0x0C"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "2",      cfg_test_vb33_mux]
+      ]
+    REG_12:
+      label: "REG TEST VB12"
+      address: "0x0D"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "2",      cfg_test_vb12_mux]
+      ]
+    REG_13:
+      label: "REG TEST CFG"
+      address: "0x0E"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "1",      cfg_test_temp_en ],
+        ["1",   "1",      cfg_test_vb33_en ],
+        ["2",   "1",      cfg_test_vb12_en ]
+      ]
+    REG_14:
+      label: "REG WINDOW SIZE"
+      address: "0x0F"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "32",      cfg_window_size]
+      ]
+    REG_15:
+      label: "REG SRAM"
+      address: "0x10"
+      signals: [
+        # Bit   # Nbits   # Label
+        [ "0",   "32",      sram_din0],
+        ["32",   "32",      sram_din1],
+        ["64",   "32",      sram_din2],
+        ["96",   "32",      sram_din3]
+      ]
+    REG_16:
+      label: "REG TEST MUX"
+      address: "0x11"
+      signals: [
+        # Bit   # Nbits   # Label
+        [ "0",   "6",      cfg_dig_test_0],
+        [ "6",   "6",      cfg_dig_test_1],
+        ["12",   "6",      cfg_dig_test_2],
+        ["18",   "6",      cfg_dig_test_3],
+        ["24",   "6",      cfg_dig_test_4],
+        ["30",   "6",      cfg_dig_test_5]
+      ]
+    REG_17:
+      label: "REG CHAR"
+      address: "0x12"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",    "48",      char_en_col          ],
+        ["48",   "14",      char_en_row          ],
+        ["62",    "1",      char_mode            ],
+        ["63",    "1",      unused               ],
+      ]
+  tools: [
+    # Name            # Enable    # Update chip    # Update device
+    ['Mux Selector',    True,        True,              False      ],
+    ['PCB Switches',    True,        False,             False      ]
+  ]
+
+
+VIEW:
+  main_panel_size:
+    w: 720
+    h: 720
+  image_panel_size:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  control_panel:
+    modes: *MODES

@@ -1,0 +1,9 @@
+TOOL:
+  chip_name: "chip_scp"
+  pcb_switches:
+    SW0:
+      label: "Enable 1V8 LDO"
+      bit: 0
+    SW1:
+      label: "Enable 3V3 LDO"
+      bit: 1

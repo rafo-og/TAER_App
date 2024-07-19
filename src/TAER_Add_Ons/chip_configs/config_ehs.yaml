@@ -1,0 +1,35 @@
+SENSOR:
+  resolution:
+    x: &SENSOR_X 64
+    y: &SENSOR_Y 64
+
+MODEL:
+  operation_timeout: 30
+  img:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  registers: &REGISTERS [
+    # Label             Value   Address
+    ["T_PIXON_HIGH",    "0x00", "0x00"],
+    ["T_PIXON_LOW",     "0x00", "0x01"],
+    ["T_FF_EN",         "0x00", "0x07"],
+    ["T_SS_logic",      "0x00", "0x08"],
+    ["T_SS_READ_DELAY", "0x00", "0x09"]
+  ]
+  dacs: &DACS [
+    # Label   Value   ID      Channel
+    ["DAC_1", "0x00", "0x00", "0x00"]
+  ]
+  sample_time: 1
+  dac_init: 370
+
+VIEW:
+  main_panel_size:
+    w: 640
+    h: 480
+  image_panel_size:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  control_panel:
+    modes:
+      labels: [ "Time to first spike", "Spatial contrast" ]

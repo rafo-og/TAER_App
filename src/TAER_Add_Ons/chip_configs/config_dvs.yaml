@@ -1,0 +1,73 @@
+SENSOR:
+  resolution:
+    x: &SENSOR_X 96
+    y: &SENSOR_Y 64
+    chip_name: &CHIP_NAME "chip_pablo"
+
+MODEL:
+  operation_timeout: 30
+  img:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+    # Should be R0, R90, R180, R270
+    rotate: "R0"
+    # Could be None, MX or MY
+    flip: None
+  chip_name: *CHIP_NAME
+  modes: &MODES [
+    # Label                 # Code
+    ["Frame mode",         "0x00"  ],
+    ["Event mode",         "0x01"  ]
+  ]
+  device_registers: [
+    # Label                 Address Value
+    ["Exposure time",       "0x00", "0x00"],
+    ["Frame time",          "0x01", "0x00"],
+    ["Initial delay",       "0x02", "0x00"],
+    ["Reset on time",       "0x03", "0x00"],
+    ["Number of samples",   "0x06", "0x00"],
+    ["N_EVENTS",            "0x05", "0x00"]
+  ]
+  dacs: &DACS [
+    # Label         Address Channel  Value
+    ["VREF",        "0x00", "0x00", "0x00"],
+    ["VTH_N",       "0x00", "0x01", "0x00"],
+    ["VPU",         "0x00", "0x02", "0x00"],
+    ["VBIAS_DIFF",  "0x00", "0x03", "0x00"],
+    ["VPD",         "0x01", "0x00", "0x00"],
+    ["VBIAS_COMP",  "0x01", "0x01", "0x00"],
+    ["VBIAS_SF",    "0x01", "0x02", "0x00"],
+    ["VTH_P",       "0x01", "0x03", "0x00"]
+  ]
+  adcs: &ADCS [
+    # ID      Channel     offset   slope           Label
+    ["0x00",   "0x00",    "0",    "0.00080566",   "None"   ]
+  ]
+  adc_tmeas: 0.1 # 0.1 s
+  chip_registers:
+      REG_0:
+        label: "REG PERIPH CFG"
+        address: "0x01"
+        signals: [
+         # Bit   # Nbits   # Label
+          ["4",   "1",      breq_nand_en         ],
+          ["3",   "1",      latch_req_en         ],
+          ["2",   "1",      latch_rst_en         ],
+          ["1",   "1",      en_online_ram_data   ],
+          ["0",   "1",      pu_boost_en          ]
+        ]
+  tools: [
+    # Name            # Enable  # Update chip   # Update device
+    ['Mux Selector',  False,     True,           False          ],
+    ['PCB Switches',  False,     False,           False         ]
+  ]
+
+VIEW:
+  main_panel_size:
+    w: 769
+    h: 768
+  image_panel_size:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  control_panel:
+    modes: *MODES

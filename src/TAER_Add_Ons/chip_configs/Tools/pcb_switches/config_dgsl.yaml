@@ -1,0 +1,18 @@
+TOOL:
+  chip_name: "digisolar"
+  pcb_switches:
+    SW0:
+      label: "Enable LDO 1.8 V"
+      bit: 0
+    SW1:
+      label: "Enable LDO 3.3 V"
+      bit: 1
+    SW2:
+      label: "Enable single-ended clk"
+      bit: 2
+    SW3:
+      label: "Enable low-power mode"
+      bit: 3
+    SW4:
+      label: "Use external bias"
+      bit: 4

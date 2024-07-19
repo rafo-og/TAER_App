@@ -1,0 +1,16 @@
+TOOL:
+  chip_name: "chip_template"
+  mux_signals:
+    SIGNAL_0:
+      caption: "Caption Reg 0 Bit 0-1"
+      label: "Reg 0 Bit 0-1"
+      values: &REG0_VALUES [
+        [ 0, Unconnected           ],
+        [ 1, Test out 1            ],
+        [ 2, Test out 2            ],
+        [ 3, Test out 3            ]
+      ]
+    SIGNAL_1:
+      caption: "Caption Reg 0 Bit 2-3"
+      label: "Reg 0 Bit 2-3"
+      values: *REG0_VALUES

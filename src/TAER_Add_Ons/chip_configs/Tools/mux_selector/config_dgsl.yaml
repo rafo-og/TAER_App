@@ -1,0 +1,58 @@
+TOOL:
+  chip_name: "digisolar"
+  mux_signals:
+    REG_27:
+      label: "cfg_mux_0"
+      caption:  "TEST DIG<0>"
+      values: &DIG_MUX [
+        [ 0,  reset                ],
+        [ 1,  pixon                ],
+        [ 2,  rstperiph            ],
+        [ 3,  rstregs_n            ],
+        [ 4,  test_spike           ],
+        [ 5,  test_req_row         ],
+        [ 6,  test_rst_row         ],
+        [ 7,  test_req_col         ],
+        [ 10, test_rst_row         ],
+        [ 11, test_rst_col         ],
+        [ 8,  aer_bus_req_n        ],
+        [ 9,  aer_bus_ack_n        ],
+        [ 12, cont_sel_x<0>        ],
+        [ 13, cont_sel_x<1>        ],
+        [ 14, centroid_valid       ],
+        [ 15, tsens_eoc            ]
+      ]
+    REG_28:
+      label: "cfg_mux_1"
+      caption: "TEST DIG<1>"
+      values: *DIG_MUX
+    REG_29:
+      label: "cfg_mux_2"
+      caption: "TEST DIG<2>"
+      values: *DIG_MUX
+    REG_30:
+      label: "cfg_mux_3"
+      caption: "TEST DIG<3>"
+      values: *DIG_MUX
+    REG_17:
+      label: "cfg_test_voltage"
+      caption: "TEST VOLTAGE"
+      values: [
+        [0, test_sensor_vph  ],
+        [1, bandgap voltage  ],
+        [2, VPTAT            ],
+        [3, Threshold voltage],
+        [4, VDIDOE           ],
+        [5, VSENSE           ],
+        [6, UNCONNECTED      ]
+      ]
+    REG_18:
+      label: "cfg_test_current"
+      caption: "TEST CURRENT"
+      values: [
+        [0, test_ib_iref   (x4)  ],
+        [1, test_ib_pu     (x1)  ],
+        [2, test_bi_comp   (x10) ],
+        [3, test_ib_idiode (x1)  ],
+        [4, UNCONNECTED          ]
+      ]

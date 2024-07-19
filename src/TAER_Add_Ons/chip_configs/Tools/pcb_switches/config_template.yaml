@@ -1,0 +1,15 @@
+TOOL:
+  chip_name: "chip_template"
+  pcb_switches:
+    SW0:
+      label: "Enable DC-DC converter"
+      bit: 0
+    SW1:
+      label: "Enable SPAD LDO"
+      bit: 1
+    SW2:
+      label: "Enable 3.3 V switch (SPAD)"
+      bit: 2
+    SW3:
+      label: "Enable 24 V switch (SPAD)"
+      bit: 3

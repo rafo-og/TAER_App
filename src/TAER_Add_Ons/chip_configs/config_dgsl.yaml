@@ -1,0 +1,302 @@
+SENSOR:
+  resolution:
+    x: &SENSOR_X 384
+    y: &SENSOR_Y 384
+    chip_name: &CHIP_NAME "digisolar"
+
+MODEL:
+  operation_timeout: 30
+  img:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+    # Should be R0, R90, R180, R270
+    rotate: "R0" # R270
+    # Could be None, MX or MY
+    flip: "None" #"MY"
+  chip_name: *CHIP_NAME
+  modes: &MODES [ # DO NOT MODIFY NAMES NOR CODES
+    # Label                 # Code
+    ["Continuous (UART)",    "0x00"  ],
+    ["Continuous (FPGA)",    "0x04"  ],
+    ["AER (UART)",           "0x01"  ],
+    ["AER (FPGA/Frames)"  ,  "0x05"  ],
+    ["AER (FPGA/Events)"  ,  "0x07"  ]
+  ]
+  device_registers: &REGISTERS [ # DO NOT MODIFY NAMES
+    # Label                 Address Value
+    ["T_EXP",               "0x00", "0x00"],
+    ["T_FRAME",             "0x01", "0x00"],
+    ["T_EN_DELAY",          "0x02", "0x00"],
+    ["T_RSTPERIPH_ON",      "0x03", "0x00"],
+    ["T_RSTREGS_ON",        "0x04", "0x00"],
+    ["T_RSTREGS_DEL",       "0x05", "0x00"],
+    ["N_SAMPLES",           "0x06", "0x00"],
+    ["N_EVENTS",            "0x07", "0x00"],
+    ["N_BYTES_TX",          "0x08", "0x00"],
+    ["N_DIV_CLK",           "0x09", "0x00"],
+    ["UART_BAUD_COUNT",     "0x0A", "0x00"],
+    ["CFG_UART_ID",         "0x0B", "0x00"]
+  ]
+  dacs: &DACS [
+    # Label              Address Channel  Value
+    ["periph_pu",        "0x01", "0x00", "0x00"],
+    ["pix_vrst",         "0x01", "0x01", "0x00"],
+    ["periph_pu_delay",  "0x01", "0x02", "0x00"],
+    ["periph_pd",        "0x01", "0x03", "0x00"],
+    ["pix_vbq",          "0x00", "0x00", "0x00"],
+    ["pix_spad_gate",    "0x00", "0x01", "0x00"]
+  ]
+  adcs: &ADCS [
+    # ID      Channel     offset   slope           Label
+    ["0x00",   "0x00",    "-0.129",    "0.0011",   "1.2 V Test voltage"  ], # 0.00093391
+    ["0x00",   "0x01",    "-0.129",    "0.0011",   "3.3 V Test voltage"  ],
+    ["0x00",   "0x02",    "0",    "1",            "Junction Temperature" ],
+    ["0x00",   "0x03",    "2E2",    "-6E-2",            "Test current"   ] #uA
+  ]
+  adc_tmeas: 0.2
+  chip_registers:
+    REG_0:
+      label: "REG MASTER CURRENT"
+      address: "0x00"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "3",      cfg_bias_iref]
+      ]
+    REG_1:
+      label: "REG ADAPTIVE VTH"
+      address: "0x01"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_idiode        ],
+        ["7",   "1",      cfg_bias_sensor_vth_sel]
+      ]
+    REG_3:
+      label: "REG BIAS VTH"
+      address: "0x03"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_bias_sensor_vth]
+      ]
+    REG_2:
+      label: "REG BIAS COMP"
+      address: "0x02"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_sensor_vbcomp]
+      ]
+    REG_4:
+      label: "REG BIAS PU (AER)"
+      address: "0x04"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_sensor_vpu ]
+      ]
+    REG_5:
+      label: "REG BIAS PD (AER + addr)"
+      address: "0x05"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_bias_sensor_vpd ]
+      ]
+    REG_6:
+      label: "REG BIAS VPU (CONT)"
+      address: "0x06"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      cfg_biase_sensor_vpuc ]
+      ]
+    REG_7:
+      label: "REG ONTIME PIXON (0)"
+      address: "0x07"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_pixon<0>  ]
+      ]
+    REG_8:
+      label: "REG ONTIME PIXON (1)"
+      address: "0x08"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_pixon<1>  ]
+      ]
+    REG_9:
+      label: "REG ONTIME PIXON (2)"
+      address: "0x09"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_pixon<2>  ]
+      ]
+    REG_10:
+      label: "REG ONTIME PIXON (3)"
+      address: "0x0A"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_pixon<3>  ]
+      ]
+    REG_11:
+      label: "REG ONTIME RSTPERIPH (0)"
+      address: "0x0B"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstperiph<0>  ]
+      ]
+    REG_12:
+      label: "REG ONTIME RSTPERIPH (1)"
+      address: "0x0C"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstperiph<1>  ]
+      ]
+    REG_13:
+      label: "REG ONTIME RSTPERIPH (2)"
+      address: "0x0D"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstperiph<2>  ]
+      ]
+    REG_14:
+      label: "REG ONTIME RSTPERIPH (3)"
+      address: "0x0E"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstperiph<3>  ]
+      ]
+    REG_15:
+      label: "REG ONTIME RSTREGS (0)"
+      address: "0x0F"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstregs_n<0>  ]
+      ]
+    REG_16:
+      label: "REG ONTIME RSTREGS (1)"
+      address: "0x10"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstregs_n<1>  ]
+      ]
+    REG_17:
+      label: "REG ONTIME RSTREGS (2)"
+      address: "0x11"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstregs_n<2>  ]
+      ]
+    REG_18:
+      label: "REG ONTIME RSTREGS (3)"
+      address: "0x12"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_width_rstregs_n<3>  ]
+      ]
+    REG_19:
+      label: "REG DELAY PIXON (0)"
+      address: "0x13"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_pixon<0>  ]
+      ]
+    REG_20:
+      label: "REG DELAY PIXON  (1)"
+      address: "0x14"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_pixon<1>  ]
+      ]
+    REG_21:
+      label: "REG DELAY PIXON  (2)"
+      address: "0x15"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_pixon<2>  ]
+      ]
+    REG_22:
+      label: "REG DELAY PIXON (3)"
+      address: "0x16"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_pixon<3>  ]
+      ]
+    REG_23:
+      label: "REG DELAY RSTREGS_N  (0)"
+      address: "0x17"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_rstregs_n<0>  ]
+      ]
+    REG_24:
+      label: "REG DELAY RSTREGS_N  (1)"
+      address: "0x18"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_rstregs_n<1>  ]
+      ]
+    REG_25:
+      label: "REG DELAY RSTREGS_N  (2)"
+      address: "0x19"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_rstregs_n<2>  ]
+      ]
+    REG_26:
+      label: "REG DELAY RSTREGS_N (3)"
+      address: "0x1A"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_sgnl_delay_rstregs_n<3>  ]
+      ]
+    REG_27:
+      label: "CFG MUX 0-1"
+      address: "0x1B"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      cfg_mux_0  ],
+        ["4",   "4",      cfg_mux_1  ]
+      ]
+    REG_28:
+      label: "CFG MUX 2-3"
+      address: "0x1C"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      cfg_mux_2  ],
+        ["4",   "4",      cfg_mux_3  ]
+      ]
+    REG_29:
+      label: "CFG MUX ANA"
+      address: "0x1D"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "3",      cfg_test_voltage  ],
+        ["3",   "1",      cfg_test_buf_en_n ],
+        ["4",   "3",      cfg_test_current  ]
+      ]
+    REG_30:
+      label: "REG BAUD RATE (0) - CLK CYCLES!"
+      address: "0x1E"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_baudrate_count<0>  ]
+      ]
+    REG_31:
+      label: "REG BAUD RATE (1) - CLK CYCLES!)"
+      address: "0x1F"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      cfg_baudrate_count<1>  ]
+      ]
+  tools: [
+    # Name            # Enable    # Update chip    # Update device
+    ['Mux Selector',    True,        True,              False      ],
+    ['PCB Switches',    True,        False,             False      ]
+  ]
+
+
+VIEW:
+  main_panel_size:
+    w: 720
+    h: 720
+  image_panel_size:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  control_panel:
+    modes: *MODES

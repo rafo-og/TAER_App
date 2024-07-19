@@ -1,0 +1,254 @@
+SENSOR:
+  resolution:
+    x: &SENSOR_X 128
+    y: &SENSOR_Y 128
+    chip_name: &CHIP_NAME "chip_scp"
+
+MODEL:
+  operation_timeout: 30
+  img:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+    # Should be R0, R90, R180, R270
+    rotate: "R270"
+    # Could be None, MX or MY
+    flip: "MX"
+  chip_name: *CHIP_NAME
+  modes: &MODES [
+    # Label                   # Code
+    ["FR",                    "0x00"  ],
+    ["SC + FPGA control",     "0x01"  ],
+    ["Raw mode (FR)",         "0x02"  ],
+    ["Raw mode (SCP)",        "0x03"  ],
+    ["SC AER SEQ",            "0x04"  ],
+    ["Raw mode (SCP)(TH)",    "0x0B"  ]
+  ]
+  device_registers: [
+    # Label             Address Value
+    ["T_PIXON",         "0",    "0x00"],
+    ["T_PERIOD",        "1",    "0x00"],
+    ["T_DELAY",         "2",    "0x00"],
+    ["T_RST_PIX",       "3",    "0x00"],
+    ["T_RST_PERIPH",    "4",    "0x00"],
+    ["T_TFS_CLK",       "5",    "0x00"],
+    ["N_SAMPLES",       "6",    "0x00"],
+    ["SPI_TX_BYTES",    "8",    "0x00"],
+    ["T_FSM_READOUT",   "9",    "0x00"],
+    ["TON_FSM_READOUT", "10",   "0x00"],
+    ["TD_FSM_READOUT",  "11",   "0x00"],
+    ["NDIV_CLK_CHIP",   "14",   "0x00"],
+    ["N_EVENTS",        "18",   "0x00"],
+  ]
+  dacs: &DACS [
+    # Label                           Address   Channel   Value
+    ["Comparator threshold 3v3",      "0x00",   "0x00",   "0x00"],
+    ["Comparator bias 3v3",           "0x00",   "0x01",   "0x00"],
+    ["Transimpedance bias Opamp 3v3", "0x00",   "0x02",   "0x00"],
+    ["Bias pull-up row",              "0x01",   "0x00",   "0x00"],
+    ["Bias pull-up column",           "0x01",   "0x01",   "0x00"],
+    ["Bias pull-down",                "0x01",   "0x02",   "0x00"]
+  ]
+  adcs: &ADCS [
+    # ID      Channel     offset   slope           Label
+    ["0x00",   "0x00",    "0",    "1",            "Internal current DAC output"   ],
+    ["0x00",   "0x01",    "0",    "1",            "Photodiode voltage center"     ],
+    ["0x00",   "0x02",    "0",    "1",            "Photodiode voltage north"      ],
+    ["0x00",   "0x03",    "0",    "1",            "Photodiode voltage south"      ]
+  ]
+  adc_tmeas: 0.1 # 0.1 s
+  chip_registers:
+    REG_0:
+      label: "Control register (CEN)"
+      address: "0x00"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "1",      o_start_fsm_timestamp   ],
+        ["1",   "1",      o_start_fsm_readout     ],
+        ["0",   "2",      o_start_fsm             ],
+        ["2",   "1",      o_cfg_reset_pix_mode    ],
+        ["3",   "1",      o_cfg_sensor_mode       ],
+        ["4",   "1",      o_write_fifo_flag_test  ]
+      ]
+    REG_1:
+      label: "Timestamp counter divider"
+      address: "0x01"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      o_wreg_div_fsm_timestamp    ]
+      ]
+    REG_2:
+      label: "Reset pixel ON time (LSB)"
+      address: "0x02"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_rst_pix_n_on_period<7:0>"  ]
+      ]
+    REG_3:
+      label: "Reset pixel ON time (MSB)"
+      address: "0x03"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_rst_pix_n_on_period<15:8>" ]
+      ]
+    REG_4:
+      label: "Reset pixel OFF time (LSB)"
+      address: "0x04"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_rst_pix_n_off_period<7:0>"    ]
+      ]
+    REG_5:
+      label: "Reset pixel OFF time (MSB)"
+      address: "0x05"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_rst_pix_n_off_period<15:8>"   ]
+      ]
+    REG_6:
+      label: "FIFO threshold (LSB)"
+      address: "0x06"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_fifo_thres_value<7:0>"    ]
+      ]
+    REG_7:
+      label: "FIFO threshold (MSB)"
+      address: "0x07"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_fifo_thres_value<15:0>"    ]
+      ]
+    REG_8:
+      label: "Divider counter CLK readout"
+      address: "0x08"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      o_wreg_div_fsm_readout ]
+      ]
+    REG_9:
+      label: "Readout timeout (LSB)"
+      address: "0x09"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_timeout<7:0>" ]
+      ]
+    REG_10:
+      label: "Readout timeout (MSB)"
+      address: "0x0A"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_timeout<15:0>" ]
+      ]
+    REG_11:
+      label: "DAC bias current pull-up row"
+      address: "0x0B"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      "o_wreg_bias_current_pu_row<3:0>" ],
+        ["4",   "1",      "o_wreg_bias_current_pu_row<4>" ]
+      ]
+    REG_12:
+      label: "DAC bias current pull-up column"
+      address: "0x0C"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      "o_wreg_bias_current_pu_col<3:0>" ],
+        ["4",   "1",      "o_wreg_bias_current_pu_col<4>" ],
+      ]
+    REG_13:
+      label: "DAC bias current pull-down"
+      address: "0x0D"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      "o_wreg_bias_current_pd<3:0>" ],
+        ["4",   "1",      "o_wreg_bias_current_pd<4>" ]
+      ]
+    REG_14:
+      label: "DAC bias current comparator"
+      address: "0x0E"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      "o_wreg_bias_current_comparator<3:0>" ],
+        ["4",   "1",      "o_wreg_bias_current_comparator<4>" ]
+      ]
+    REG_15:
+      label: "DAC bias current test delay"
+      address: "0x0F"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "2",      "o_wreg_bias_test_delay<1:0>" ]
+      ]
+    REG_16:
+      label: "Voltage DAC control"
+      address: "0x10"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      "o_wreg_dac_vth<4:0>" ],
+        ["5",   "1",      "o_wreg_dac_vth<5>"   ],
+        ["6",   "1",      "o_wreg_dac_vth<6>"   ],
+        ["7",   "1",      "o_wreg_dac_vth<7>"   ]
+      ]
+    REG_17:
+      label: "Current DACs enable control"
+      address: "0x11"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "5",      "o_wreg_dac_test_en<4:0>"      ],
+        ["5",   "1",      "o_wreg_dac_test_en<5>"        ]
+      ]
+    REG_18:
+      label: "Bias control (Pad / DAC)"
+      address: "0x12"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "1",      "o_wreg_dac_mux<0>"      ],
+        ["1",   "1",      "o_wreg_dac_mux<1>"      ],
+        ["2",   "1",      "o_wreg_dac_mux<2>"      ],
+        ["3",   "1",      "o_wreg_dac_mux<3>"      ],
+        ["4",   "1",      "o_wreg_dac_mux<4>"      ],
+        ["5",   "1",      "o_wreg_dac_mux<5>"      ],
+        ["6",   "1",      "o_wreg_dac_mux<6>"      ]
+      ]
+    REG_19:
+      label: "FIFO register test write (LSB)"
+      address: "0x13"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_to_fifo_test<7:0>" ]
+      ]
+    REG_20:
+      label: "FIFO register test write (MSB)"
+      address: "0x14"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "o_wreg_to_fifo_test<15:0>" ]
+      ]
+    REG_21:
+      label: "PAD configuration"
+      address: "0x15"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "4",      "o_wreg_cfg_drive_pads" ]
+      ]
+    REG_22:
+      label: "Chip ID"
+      address: "0x16"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "8",      "Should be 82 ('R')" ]
+      ]
+  tools: [
+    # Name            # Enable  # Update chip   # Update device
+    ['Mux Selector',  True,     True,           False           ],
+    ['PCB Switches',  True,     False,          False           ]
+  ]
+
+VIEW:
+  main_panel_size:
+    w: 600
+    h: 600
+  image_panel_size:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  control_panel:
+    modes: *MODES

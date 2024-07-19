@@ -1,0 +1,6 @@
+TOOL:
+  chip_name: "chip_mangut"
+  pcb_switches:
+    SW0:
+      label: "F25"
+      bit: 0
