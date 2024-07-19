@@ -6,6 +6,11 @@ authors = [
     {name = "Rafael de la Rosa", email = "rafodelarosa.og@gmail.com"},
     {name = "Ruben Gomez Merchan", email = "rgmerchan@us.es"},
 ]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 dependencies = [
     "TAER_Core"
 ]
@@ -18,8 +23,6 @@ build-backend = "flit_core.buildapi"
 [tool.flit.sdist]
 include = ["src/TAER_Add_Ons/chip_configs", "src/TAER_Add_Ons/config"]
 
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
+
+[dependencies]
+TAER_Core = { url = "https://github.com/rafo-og/TAER_App/releases/download/v0.0.1/taer_core-0.0.1.tar.gz" }
