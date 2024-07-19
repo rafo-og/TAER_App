@@ -17,3 +17,9 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.sdist]
 include = ["src/TAER_Add_Ons/chip_configs", "src/TAER_Add_Ons/config"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
