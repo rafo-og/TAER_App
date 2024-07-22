@@ -1,6 +1,6 @@
 [project]
 name = "TAER_Add_Ons"
-version = "0.0.1"
+version = "0.0.2"
 description = "App for test AER based sensors."
 authors = [
     {name = "Rafael de la Rosa", email = "rafodelarosa.og@gmail.com"},
@@ -11,10 +11,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = [
-    "TAER_Core @ https://github.com/rafo-og/TAER_Core_Releases/releases/download/v0.0.1/TAER_Core-0.0.1-cp310-cp310-win_amd64.whl"
-]
 requires-python = ">=3.10.5"
+dependencies = [
+    "TAER_Core @ https://github.com/rafo-og/TAER_Core_Releases/releases/download/v0.0.2/TAER_Core-0.0.2-cp310-cp310-win_amd64.whl"
+]
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
