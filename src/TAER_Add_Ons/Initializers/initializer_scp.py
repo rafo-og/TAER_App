@@ -1,15 +1,16 @@
-from TAER_Add_Ons.Initializers.initializer_base import InitializerBase
-from TAER_Add_Ons.Test.scp.GetDataset import DataSetGatheringPresenter
-from TAER_Core.main_model import MainModel, ChipRegister
-from TAER_Core.Libs import LINK_VALUE_DEF, TRIGGER_DEF
-import cv2 as cv
-import numpy as np
-import pickle
-import time
-from datetime import date
-from typing import Callable
 import os
 import warnings
+import time
+import pickle
+from typing import Callable
+import numpy as np
+import cv2 as cv
+from datetime import date
+from TAER_Core.main_model import MainModel, ChipRegister
+from TAER_Core.Libs import LINK_VALUE_DEF, TRIGGER_DEF
+from TAER_Add_Ons.Initializers.initializer_base import InitializerBase
+from TAER_Add_Ons.Test.scp.GetDataset import DataSetGatheringPresenter
+from TAER_Add_Ons.Test.scp.Consumption import ConsumptionTest
 
 onedrive_path = os.getenv("OneDrive")
 datetime = date.today().strftime("%d_%m_%Y")
@@ -35,11 +36,6 @@ class InitializerSCP(InitializerBase):
     def on_before_capture(self):
         if self.__check_mode("SC AER SEQ"):
             self.model.device.actions.enable_clk_chip(True)
-            # ----------- RESET FPGA MODULES ----------
-            self.model.device.actions.stop_capture()
-            self.model.device.actions.reset_fifo()
-            self.model.device.actions.reset_ram()
-            self.model.device.actions.reset_aer()
         else:
             self.model.device.actions.enable_clk_chip(False)
 
@@ -50,10 +46,8 @@ class InitializerSCP(InitializerBase):
         if save_images:
             self.__save_raw_img(raw_data, os.path.join(tmp_folder, "data_raw.bin"))
         if not (self.model.TFS_raw_mode_en or self.model.FR_raw_mode_en):
-            # raw_data = raw_data.reshape((-1, 128))
-            # self.__remove_cluster_effects(raw_data)
-            # raw_data = raw_data.reshape((-1,))
             self.model.main_img_data = raw_data
+            self.logger.info(f"Events FR: {np.sum(raw_data)}")
         elif self.model.FR_raw_mode_en and self.__check_mode("SC AER SEQ"):
             raw_data = self.decode_seq_data(raw_data)
             sc_img, _ = self.__sc_compute(raw_data, self.__sc_michelson)
@@ -78,13 +72,15 @@ class InitializerSCP(InitializerBase):
             sc_img, _ = self.__sc_compute(raw_data, self.__sc_michelson)
             # sc_img = self.__remove_cluster_effects(sc_img)
             self.model.main_img_data = self.build_sc_image(sc_img)
+            self.logger.info(f"Events raw data: {raw_data.size}")
 
     def on_end_capture(self):
         self.logger.info(f"Events: {self.model.device.actions.get_evt_count()}")
 
     def on_test(self):
         # self.get_img_dataset()
-        self.check_fsm_fifo_readout()
+        # self.check_fsm_fifo_readout()
+        self.consumption_tool()
 
     def gen_serial_frame(self, operation: str, register: ChipRegister):
         """Generate the SPI data frame to send depending on several parameters
@@ -134,7 +130,9 @@ class InitializerSCP(InitializerBase):
             return []
 
     def __set_mode_from_name(self):
-        if self.__check_mode("Raw mode (SCP)") or self.__check_mode("Raw mode (SCP)(TH)"):
+        if self.__check_mode("Raw mode (SCP)") or self.__check_mode(
+            "Raw mode (SCP)(TH)"
+        ):
             self.model.TFS_raw_mode_en = True
             self.model.FR_raw_mode_en = False
         elif self.__check_mode("Raw mode (FR)"):
@@ -162,7 +160,9 @@ class InitializerSCP(InitializerBase):
             self.__set_cfg_signal(EXT_SIG.PAR_IFACE_SRC, 0)
         self.model.device.actions.__update_wires__()
 
-    def __sc_compute(self, raw_data: np.ndarray, method: Callable[[int, int], float]) -> np.ndarray:
+    def __sc_compute(
+        self, raw_data: np.ndarray, method: Callable[[int, int], float]
+    ) -> np.ndarray:
         """Process raw data from SC sensor running in Spatial Contrast mode.
 
         Args:
@@ -209,7 +209,9 @@ class InitializerSCP(InitializerBase):
                 else:
                     data_errors[x, y] = data_errors[x, y] + 1
                     if data_errors[x, y] > 2:
-                        print(f"Pixel ({x}, {y}) triggers {data_errors[x, y] + 1} events.")
+                        print(
+                            f"Pixel ({x}, {y}) triggers {data_errors[x, y] + 1} events."
+                        )
                     dt1 = t2[x, y] - t1[x, y]
                     dt2 = times[i] - t2[x, y]
                     if dt1 < dt2:
@@ -330,7 +332,9 @@ class InitializerSCP(InitializerBase):
                 addr_pix = (y << 16) + x
                 times_pix = times[np.where(addresses == addr_pix)]
                 if len(times_pix) > 2:
-                    im_out[x, y] = 1 / (np.median(times_pix[1:] - times_pix[0:-1]) * 1e-6)
+                    im_out[x, y] = 1 / (
+                        np.median(times_pix[1:] - times_pix[0:-1]) * 1e-6
+                    )
                 else:
                     im_out[x, y] = 0
         return im_out
@@ -352,12 +356,13 @@ class InitializerSCP(InitializerBase):
         while os.path.exists(path):
             path = filename + "_" + str(counter) + extension
             counter += 1
-
         return path
 
     # Configuration methods
     def __set_cfg_signal(self, signal, value):
-        self.model.device.actions.__set_wire__(self.model.device.actions.links.win0, value, signal)
+        self.model.device.actions.__set_wire__(
+            self.model.device.actions.links.win0, value, signal
+        )
 
     def load_preset(self, preset):
         with open(preset, "rb") as fp:
@@ -370,8 +375,14 @@ class InitializerSCP(InitializerBase):
         self.getDataSetApp = DataSetGatheringPresenter(self.model)
         self.getDataSetApp.start()
 
+    def consumption_tool(self):
+        self.measTool = ConsumptionTest(self.model)
+        self.measTool.start()
+
     def check_fsm_fifo_readout(self):
-        PRESET_PATH = "C:\\ONEDRIVE_US\\OneDrive - UNIVERSIDAD DE SEVILLA\\TIC-179\\SCP\\PRESETS\\scp_seq_v4.preset"
+        PRESET_PATH = os.path.join(
+            onedrive_path, "Thesis/SCP/TEST/PRESETS/scp_seq_v4.preset"
+        )
         fifo_data_in = np.arange(10, 200)
         flag = 1
         self.model.device.actions.enable_clk_chip(False)
@@ -392,7 +403,9 @@ class InitializerSCP(InitializerBase):
         # ------ LOAD VALUES IN FIFO --------------
         for data in fifo_data_in:
             self.model.write_signal("o_wreg_to_fifo_test<7:0>", int(data & 0xFF))
-            self.model.write_signal("o_wreg_to_fifo_test<15:0>", int((data >> 8) & 0xFF))
+            self.model.write_signal(
+                "o_wreg_to_fifo_test<15:0>", int((data >> 8) & 0xFF)
+            )
             self.model.write_signal("o_write_fifo_flag_test", flag)
             if flag:
                 flag = 0
@@ -431,7 +444,9 @@ class InitializerSCP(InitializerBase):
                 self.logger.error("Check FIFO readout FSM test failed.")
                 break
         if res:
-            self.logger.info("Check FIFO readout FSM checking test completed successfully.")
+            self.logger.info(
+                "Check FIFO readout FSM checking test completed successfully."
+            )
         # ----------- RESET FPGA MODULES ----------
         self.model.device.actions.stop_capture()
         self.model.device.actions.reset_fifo()

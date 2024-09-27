@@ -1,7 +1,7 @@
-from .lib.platform import Platform
-from .lib.spad_char import SpadChar
-from .lib.NP1930 import NP1930
-from .lib.monochrom import Monochromator
+from TAER_Add_Ons.Test.libs.platform import Platform
+from TAER_Add_Ons.Test.libs.spad_char import SpadChar
+from TAER_Add_Ons.Test.libs.NP1930C import NP1930
+# from TAER_Add_Ons.Test.libs.monochrom import Monochromator
 import csv
 import time
 import os
@@ -14,7 +14,7 @@ class TestSpadsPdp(SpadChar):
         config_path = "chip_configs/config_saer.yaml"
         bitstream = "test/saer/bitstreams/AER_TOP.bit"
         self.platform = Platform(config_path, bitstream)
-        self.mono = Monochromator()
+        # self.mono = Monochromator()
         self.np1930 = NP1930()
         # Register parameters
         self.reg_addr = 0x12  # 'REG CHAR' address

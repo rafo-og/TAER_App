@@ -1,0 +1,4 @@
+[Paths]
+
+VISA library: C:\Program Files\Keysight\IO Libraries Suite\Keysight.Visa.dll
+dll_extra_paths: C:\Program Files\Keysight\IO Libraries Suite\bin;C:\Program Files (x86)\Keysight\IO Libraries Suite\bin

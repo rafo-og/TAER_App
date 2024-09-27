@@ -1,7 +1,7 @@
-from .lib.platform import Platform
-from .lib.spad_char import SpadChar
-from .lib.NP1930 import NP1930
-from .lib.monochrom import Monochromator
+from TAER_Add_Ons.Test.libs.platform import Platform
+from TAER_Add_Ons.Test.libs.spad_char import SpadChar
+# from TAER_Add_Ons.Test.libs.NP1930 import NP1930
+# from TAER_Add_Ons.Test.libs.monochrom import Monochromator
 import csv
 import time
 import os

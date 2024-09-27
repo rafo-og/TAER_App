@@ -1,0 +1,3 @@
+.pyvisarc file is used to configure the VISA library to use as backend for pyvisa module. This file should be placed at the .venv folder to be recognized by the Python interpreter. Namely this should be the path for this file:
+
+.venv\share\pyvisa\.pyvisarc

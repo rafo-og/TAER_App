@@ -1,8 +1,10 @@
-from .lib.platform import Platform
-from .lib.spad_char import SpadChar
-from .lib.NP1930 import NP1930
-from .lib.dso81304b import DSO81304B
-from .lib.monochrom import Monochromator
+from TAER_Add_Ons.Test.libs.platform import Platform
+from TAER_Add_Ons.Test.libs.platform import Platform
+from TAER_Add_Ons.Test.libs.spad_char import SpadChar
+from TAER_Add_Ons.Test.libs.NP1930C import NP1930
+
+# from TAER_Add_Ons.Test.libs.dso81304b import DSO81304B
+# from TAER_Add_Ons.Test.libs.monochrom import Monochromator
 import csv
 import time
 import os
@@ -15,7 +17,8 @@ class TestDelayJitter(SpadChar):
         config_path = "chip_configs/config_saer.yaml"
         bitstream = "test/saer/bitstreams/AER_TOP_rising.bit"
         self.platform = Platform(config_path, bitstream)
-        self.osc = DSO81304B()
+        # self.osc = DSO81304B()
+        self.osc = None
         # Parameters
         self.__reset_delay()
         self.nbin = 0  # Number of bin

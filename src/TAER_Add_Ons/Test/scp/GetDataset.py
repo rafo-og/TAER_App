@@ -59,7 +59,7 @@ class DataSetGatheringPresenter:
         self.model = model
         # Logging
         self.logger = logging.getLogger("test")
-        self.view = DataSetGatheringView(None)
+        self.view = DataSetGatheringView()
         self.delegates = DataSetGatheringDelegates(self, self.view)
         self.view.set_paths(DATASET_FOLDER, OUTPUT_FOLDER)
         self.isGathering = False
@@ -266,7 +266,9 @@ class DataSetGatheringPresenter:
 
 
 class DataSetGatheringView(AuxViewBase):
-    def __init__(self, parent):
+    def __init__(self):
+        pWindow = wx.GetTopLevelWindows()[0]
+        parent = wx.GetTopLevelParent(pWindow)
         super().__init__(
             parent=parent,
             id=wx.NewId(),
@@ -390,11 +392,12 @@ class DataSetGatheringLabelsPanel(wx.Panel):
 
 
 class DataSetGatheringDelegates:
-    def __init__(self, presenter, view) -> None:
+    def __init__(self, presenter: DataSetGatheringPresenter, view: DataSetGatheringView) -> None:
         self.view = view
         self.presenter = presenter
         self.view.label_panel.start_test_btn.Bind(wx.EVT_BUTTON, self.onStart)
         self.view.Bind(wx.EVT_MOVE, self.OnMove)
+        self.view.Bind(wx.EVT_CLOSE, self.OnClose)
 
     def onStart(self, event):
         if self.view.label_panel.start_test_btn.GetLabel() == "Start":
@@ -409,3 +412,6 @@ class DataSetGatheringDelegates:
         x, y = self.view.GetPosition()
         self.view.label_panel.position_txt_box.SetLabel(f"(X, Y): ({x}, {y})")
         self.view.label_panel.Layout()
+
+    def OnClose(self, event):
+        self.view.close(True)
