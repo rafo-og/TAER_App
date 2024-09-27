@@ -13,11 +13,10 @@ classifiers = [
 ]
 requires-python = ">=3.10.5"
 dependencies = [
-    # "TAER_Core @ https://github.com/rafo-og/TAER_Core_Releases/releases/download/v0.0.2/TAER_Core-0.0.2-cp310-cp310-win_amd64.whl"
-    "TAER_Core @ file://C:/VSCODE/TAER/TAER-Core"
-    "pyvisa-py"
-    "PyUSB"
-    "unit_parse"
+    "TAER-Core",
+    "pyvisa-py",
+    "PyUSB",
+    "unit_parse",
 ]
 
 [build-system]
