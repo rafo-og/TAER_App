@@ -21,17 +21,17 @@ We recomend to use Visual Studio Code to work with this project. Open a new empt
 
 ## How to add a new chip to the app
 
-To configure a new chip to work with this application, two steps must be followed: create a new configuration file in the [chip_configs](src/TAER_Add_Ons/chip_configs) folder and a new initializer script in the [Initializers](src/TAER_Add_Ons/Initializers) folder.
+To configure a new chip to work with this application, two steps must be followed: create a new configuration file in the [chip_configs](src/TAER_App/chip_configs) folder and a new initializer script in the [Initializers](src/TAER_App/Initializers) folder.
 
 ### Creating a configuration file
 
-The first step is to copy the file [config_template.yaml](src/TAER_Add_Ons/chip_configs/config_template.yaml) in the same folder and replace the name with a meaningful one. Once we have copied these files we need to replace some configuration parameters regarding the sensor architecture to be added. The configuration has three main sections: SENSOR, MODEL and VIEW.
+The first step is to copy the file [config_template.yaml](src/TAER_App/chip_configs/config_template.yaml) in the same folder and replace the name with a meaningful one. Once we have copied these files we need to replace some configuration parameters regarding the sensor architecture to be added. The configuration has three main sections: SENSOR, MODEL and VIEW.
 
 #### SENSOR
 
 This section defines the sensor resolution through the X and Y parameters. In the template, the X and Y parameters take the value 64 as default. It must be modified as needed.
 
-Also the 'chip_name' is defined in this section. This name should be unique for your chip in case more than one configuration coexists in the [chip_configs](src/TAER_Add_Ons/chip_configs) folder.
+Also the 'chip_name' is defined in this section. This name should be unique for your chip in case more than one configuration coexists in the [chip_configs](src/TAER_App/chip_configs) folder.
 
 #### MODEL
 
@@ -84,7 +84,7 @@ The initializer defines a series of methods that will be called in the app flow.
 
 ## App architecture
 
-This section is not really necessary to read, it is intended for those who want to have a deeper understaing of the app architecture. The app is composed of two main modules: TAER_Core and TAER_Add_Ons. TAER_Core contains the core of the application and it is not intended to be accessible to app users, it should only be modified by app developers. On the other hand, TAER_Add_Ons module is contained in this repository and can be modified regarding to the user needs.
+This section is not really necessary to read, it is intended for those who want to have a deeper understaing of the app architecture. The app is composed of two main modules: TAER_Core and TAER_App. TAER_Core contains the core of the application and it is not intended to be accessible to app users, it should only be modified by app developers. On the other hand, TAER_App module is contained in this repository and can be modified regarding to the user needs.
 
 The module TAER_Core is based on the [wxPython](https://wiki.wxpython.org) framework and the architecture is the well-known [Model-View-Controller](https://wiki.wxpython.org/ModelViewController) pattern. The components are organized as follows:
 

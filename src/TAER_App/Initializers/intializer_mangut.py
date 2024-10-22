@@ -1,4 +1,4 @@
-from TAER_Add_Ons.Initializers.initializer_base import InitializerBase
+from TAER_App.Initializers.initializer_base import InitializerBase
 from TAER_Core.main_model import MainModel
 from TAER_Core.Libs import LINK_VALUE_DEF, TRIGGER_DEF
 import numpy as np

@@ -8,9 +8,9 @@ import cv2 as cv
 from datetime import date
 from TAER_Core.main_model import MainModel, ChipRegister
 from TAER_Core.Libs import LINK_VALUE_DEF, TRIGGER_DEF
-from TAER_Add_Ons.Initializers.initializer_base import InitializerBase
-from TAER_Add_Ons.Test.scp.GetDataset import DataSetGatheringPresenter
-from TAER_Add_Ons.Test.scp.Consumption import ConsumptionTest
+from TAER_App.Initializers.initializer_base import InitializerBase
+from TAER_App.Test.scp.GetDataset import DataSetGatheringPresenter
+from TAER_App.Test.scp.Consumption import ConsumptionTest
 
 onedrive_path = os.getenv("OneDrive")
 datetime = date.today().strftime("%d_%m_%Y")

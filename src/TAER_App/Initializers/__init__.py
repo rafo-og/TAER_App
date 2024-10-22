@@ -1,4 +1,4 @@
-from TAER_Add_Ons.Initializers.initializer_base import InitializerBase
+from TAER_App.Initializers.initializer_base import InitializerBase
 import os
 from inspect import isclass
 from pkgutil import iter_modules

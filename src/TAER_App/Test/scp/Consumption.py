@@ -12,7 +12,7 @@ from matplotlib.backends.backend_wxagg import (
     NavigationToolbar2WxAgg as NavigationToolbar2Wx,
 )
 from unit_parse import parser
-from TAER_Add_Ons.Test.libs.KEYSIGHT_34465A import KEYSIGHT_34465A
+from TAER_App.Test.libs.KEYSIGHT_34465A import KEYSIGHT_34465A
 from TAER_Core.Views.auxiliar_view_base import AuxViewBase
 
 datetime_str = date.today().strftime("%d_%m_%Y")

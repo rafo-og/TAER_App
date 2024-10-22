@@ -1,10 +1,10 @@
-from TAER_Add_Ons.Test.libs.platform import Platform
-from TAER_Add_Ons.Test.libs.platform import Platform
-from TAER_Add_Ons.Test.libs.spad_char import SpadChar
-from TAER_Add_Ons.Test.libs.NP1930C import NP1930
+from TAER_App.Test.libs.platform import Platform
+from TAER_App.Test.libs.platform import Platform
+from TAER_App.Test.libs.spad_char import SpadChar
+from TAER_App.Test.libs.NP1930C import NP1930
 
-# from TAER_Add_Ons.Test.libs.dso81304b import DSO81304B
-# from TAER_Add_Ons.Test.libs.monochrom import Monochromator
+# from TAER_App.Test.libs.dso81304b import DSO81304B
+# from TAER_App.Test.libs.monochrom import Monochromator
 import csv
 import time
 import os
