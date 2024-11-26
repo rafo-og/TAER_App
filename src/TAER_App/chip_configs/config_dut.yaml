@@ -1,0 +1,57 @@
+SENSOR:
+  resolution:
+    x: &SENSOR_X 64
+    y: &SENSOR_Y 64
+    chip_name: &CHIP_NAME "chip_template"
+
+MODEL:
+  operation_timeout: 30
+  img:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+    # Should be R0, R90, R180, R270
+    rotate: "R90"
+    # Could be None, MX or MY
+    flip: "MX"
+  chip_name: *CHIP_NAME
+  modes: &MODES [
+    # Label                 # Code
+    ["Mode 1",              "0x02"  ],
+    ["Mode 2",              "0x04"  ]
+  ]
+  device_registers: [
+    # Label       Address Value
+    ["DEV_REG_1", "0x00", "0x00"],
+    ["DEV_REG_2", "0x01", "0x00"],
+  ]
+  chip_registers:
+    REG_0:
+      label: "REG 0"
+      address: "0x10"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "2",      Reg 0 Bit 0-1   ],
+        ["2",   "2",      Reg 0 Bit 2-3   ]
+      ]
+    REG_1:
+      label: "REG 1"
+      address: "0x11"
+      signals: [
+        # Bit   # Nbits   # Label
+        ["0",   "2",      Reg 1 Bit 0-1   ]
+      ]
+  tools: [
+    # Name            # Enable  # Update chip   # Update device
+    ['Mux Selector',  True,     True,           False           ],
+    ['PCB Switches',  True,     False,          False           ]
+  ]
+
+VIEW:
+  main_panel_size:
+    w: 1024
+    h: 768
+  image_panel_size:
+    w: *SENSOR_X
+    h: *SENSOR_Y
+  control_panel:
+    modes: *MODES

@@ -11,10 +11,13 @@ from TAER_Core.Libs import LINK_VALUE_DEF, TRIGGER_DEF
 from TAER_App.Initializers.initializer_base import InitializerBase
 from TAER_App.Test.scp.GetDataset import DataSetGatheringPresenter
 from TAER_App.Test.scp.Consumption import ConsumptionTest
+from TAER_App.Test.scp.LightResponse import LightResponse
 
 onedrive_path = os.getenv("OneDrive")
 datetime = date.today().strftime("%d_%m_%Y")
-tmp_folder = os.path.join(onedrive_path, f"TIC-179/SCP/TMP/experiments/{datetime}")
+tmp_folder = os.path.join(
+    onedrive_path, f"Thesis/SCP/TEST/EXPERIMENTS/tmp/TAER/{datetime}"
+)
 
 
 class InitializerSCP(InitializerBase):
@@ -22,6 +25,7 @@ class InitializerSCP(InitializerBase):
         super().__init__(model)
         self.getDataSetApp = None
         self.chip_name = "chip_scp"
+        self.current_raw_data = None
 
     def on_start_app(self):
         pass
@@ -40,7 +44,8 @@ class InitializerSCP(InitializerBase):
             self.model.device.actions.enable_clk_chip(False)
 
     def on_after_capture(self, raw_data):
-        save_images = True
+        # self.logger.info("Processing image...")
+        save_images = False
         if self.__check_mode("SC AER SEQ"):
             self.model.device.actions.enable_clk_chip(False)
         if save_images:
@@ -53,8 +58,7 @@ class InitializerSCP(InitializerBase):
             sc_img, _ = self.__sc_compute(raw_data, self.__sc_michelson)
             self.model.main_img_data = self.build_sc_image(sc_img)
         elif self.model.FR_raw_mode_en and not self.__check_mode("Raw mode (SCP)"):
-            img_pre = self.process_fr_raw_periods(raw_data)
-            self.model.main_img_data = img_pre
+            self.current_raw_data = raw_data
         elif self.__check_mode("Raw mode (SCP)(TH)"):
             # sc_img = self.__sc_compute(raw_data, self.__sc_lenero)
             # sc_img = self.__sc_compute(raw_data, self.__sc_weber)
@@ -69,18 +73,22 @@ class InitializerSCP(InitializerBase):
         else:
             # sc_img = self.__sc_compute(raw_data, self.__sc_lenero)
             # sc_img = self.__sc_compute(raw_data, self.__sc_weber)
+            self.control_vth(raw_data)
             sc_img, _ = self.__sc_compute(raw_data, self.__sc_michelson)
             # sc_img = self.__remove_cluster_effects(sc_img)
             self.model.main_img_data = self.build_sc_image(sc_img)
-            self.logger.info(f"Events raw data: {raw_data.size}")
+        # self.logger.info("Processing image... Done.")
 
     def on_end_capture(self):
-        self.logger.info(f"Events: {self.model.device.actions.get_evt_count()}")
+        if self.model.FR_raw_mode_en and not self.__check_mode("Raw mode (SCP)"):
+            img_pre = self.process_fr_raw_counts(self.current_raw_data[0 : (2**16)])
+            self.model.main_img_data = img_pre
 
     def on_test(self):
         # self.get_img_dataset()
         # self.check_fsm_fifo_readout()
-        self.consumption_tool()
+        # self.consumption_tool()
+        self.light_response()
 
     def gen_serial_frame(self, operation: str, register: ChipRegister):
         """Generate the SPI data frame to send depending on several parameters
@@ -188,8 +196,8 @@ class InitializerSCP(InitializerBase):
 
     def process_scp_times(self, raw_data: np.ndarray):
         res = True
-        address = raw_data[np.arange(0, len(raw_data), 2)]
-        times = raw_data[np.arange(1, len(raw_data), 2)]
+        address = raw_data[0::2]
+        times = raw_data[1::2]
         # Get the two frames (first and second spike)
         t1 = np.zeros((128, 128))
         t2 = np.zeros((128, 128))
@@ -270,6 +278,25 @@ class InitializerSCP(InitializerBase):
         if terrors:
             self.logger.warning(f"Total timestamp errors {terrors}")
         return np.array(dev_data)
+
+    def control_vth(self, raw_data: np.ndarray):
+        max_vth = 28  # Maximum Vth
+        min_vth = 10  # Minimum Vth
+        texp = self.model.read_dev_register("T_PIXON")  # Get the exposure time
+        ttol = [100000, 200000]  # Set a windows for the last event
+        vth = self.model.read_signal("o_wreg_dac_vth<4:0>")  # Read the current vth
+        last_event = raw_data[-1]  # Get the last event time
+        ndata = len(raw_data)
+        dataperframe = 65536
+        if ndata < dataperframe:  # The matrix has not triggered entirely
+            if vth < max_vth:  # Increase Vth if lower than the maximum
+                vth = vth + 1
+                self.model.write_signal("o_wreg_dac_vth<4:0>", vth)
+        elif last_event < (texp - ttol):  # The last event occurred much time before
+            if vth > min_vth:  # the total exposure time
+                vth = vth - 1  # Decrease Vth if higher than minimum
+                self.model.write_signal("o_wreg_dac_vth<4:0>", vth)
+        self.logger.info(f"Vth {vth}")
 
     # Contrast methods
     def __sc_lenero(self, t1, t2):
@@ -452,6 +479,10 @@ class InitializerSCP(InitializerBase):
         self.model.device.actions.reset_fifo()
         self.model.device.actions.reset_ram()
         self.model.device.actions.reset_aer()
+
+    def light_response(self):
+        lightTool = LightResponse()
+        lightTool.save(self.model.main_img_data)
 
 
 class EXT_SIG:

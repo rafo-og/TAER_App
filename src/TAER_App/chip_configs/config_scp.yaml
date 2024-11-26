@@ -5,7 +5,7 @@ SENSOR:
     chip_name: &CHIP_NAME "chip_scp"
 
 MODEL:
-  operation_timeout: 30
+  operation_timeout: 60
   img:
     w: *SENSOR_X
     h: *SENSOR_Y

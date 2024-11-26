@@ -25,3 +25,9 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.sdist]
 include = ["src/TAER_App/chip_configs", "src/TAER_App/config"]
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 119
