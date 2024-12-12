@@ -1,0 +1,3 @@
+import TAER_Core
+
+__version__=TAER_Core.__version__
