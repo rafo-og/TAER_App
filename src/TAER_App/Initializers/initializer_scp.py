@@ -11,7 +11,6 @@ from TAER_Core.Libs import LINK_VALUE_DEF, TRIGGER_DEF
 from TAER_App.Initializers.initializer_base import InitializerBase
 from TAER_App.Test.scp.GetDataset import DataSetGatheringPresenter
 from TAER_App.Test.scp.Consumption import ConsumptionTest
-from TAER_App.Test.scp.LightResponse import LightResponse
 
 onedrive_path = os.getenv("OneDrive")
 datetime = date.today().strftime("%d_%m_%Y")
@@ -479,11 +478,6 @@ class InitializerSCP(InitializerBase):
         self.model.device.actions.reset_fifo()
         self.model.device.actions.reset_ram()
         self.model.device.actions.reset_aer()
-
-    def light_response(self):
-        lightTool = LightResponse()
-        lightTool.save(self.model.main_img_data)
-
 
 class EXT_SIG:
     # RESET CLUSTER CONFIGURATION
