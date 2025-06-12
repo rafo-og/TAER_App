@@ -85,3 +85,9 @@ The initializer defines a series of methods that will be called in the app flow.
 ## App architecture
 
 This section is not really necessary to read, it is intended for those who want to have a deeper understaing of the app architecture. The app is composed of two main modules: TAER_Core and TAER_App. TAER_Core contains the core of the application and it is not intended to be accessible to app users, it should only be modified by app developers. On the other hand, TAER_App module is contained in this repository and can be modified regarding to the user needs. For further reference, please follow this link to the [TAER_Core](https://github.com/rafo-og/TAER_Core) repository.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 (GPLv3).
+
+You are free to use, modify, and distribute this software, but any derivative works must also be open source and licensed under GPLv3. Please retain attribution to the original project and author.
