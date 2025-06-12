@@ -84,12 +84,4 @@ The initializer defines a series of methods that will be called in the app flow.
 
 ## App architecture
 
-This section is not really necessary to read, it is intended for those who want to have a deeper understaing of the app architecture. The app is composed of two main modules: TAER_Core and TAER_App. TAER_Core contains the core of the application and it is not intended to be accessible to app users, it should only be modified by app developers. On the other hand, TAER_App module is contained in this repository and can be modified regarding to the user needs.
-
-The module TAER_Core is based on the [wxPython](https://wiki.wxpython.org) framework and the architecture is the well-known [Model-View-Controller](https://wiki.wxpython.org/ModelViewController) pattern. The components are organized as follows:
-
-- Model: &nbsp; &nbsp; &nbsp; &nbsp; main_model.py
-- Controller: &nbsp; main_presenter.py | delegates.py | interactors.py
-- View: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; main_view.py | Views
-
-__TO-DO__
+This section is not really necessary to read, it is intended for those who want to have a deeper understaing of the app architecture. The app is composed of two main modules: TAER_Core and TAER_App. TAER_Core contains the core of the application and it is not intended to be accessible to app users, it should only be modified by app developers. On the other hand, TAER_App module is contained in this repository and can be modified regarding to the user needs. For further reference, please follow this link to the [TAER_Core](https://github.com/rafo-og/TAER_Core) repository.
